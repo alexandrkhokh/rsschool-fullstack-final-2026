@@ -1,0 +1,82 @@
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+.button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Варианты */
+.primary {
+  border: none;
+  background-color: #2563eb;
+  color: #ffffff;
+}
+
+.primary:hover:not(:disabled) {
+  background-color: #1d4ed8;
+}
+
+.secondary {
+  border: 1px solid #989898;
+  background-color: #f8fafc;
+  color: #0f172a;
+}
+
+.secondary:hover:not(:disabled) {
+  background-color: #e2e8f0;
+}
+
+.ghost {
+  border: none;
+  background-color: transparent;
+  color: #64748b;
+}
+
+.ghost:hover:not(:disabled) {
+  background-color: #f1f5f9;
+  color: #0f172a;
+}
+
+.danger {
+  border: none;
+  background-color: transparent;
+  color: #94a3b8;
+}
+
+.danger:hover:not(:disabled) {
+  color: #ef4444;
+  background-color: #fef2f2;
+}
+
+/* Размеры */
+.sm {
+  min-width: 28px;
+  height: 28px;
+  padding: 0 8px;
+  font-size: 14px;
+}
+
+.md {
+  height: 38px;
+  padding: 0 16px;
+  font-size: 15px;
+}
+
+.lg {
+  height: 46px;
+  padding: 0 20px;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.fullWidth {
+  width: 100%;
+}

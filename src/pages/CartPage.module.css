@@ -1,0 +1,35 @@
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.pageTitle {
+  margin: 0 0 24px;
+  font-size: 28px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 24px;
+  align-items: start;
+  color: black;
+}
+
+.itemsList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+@media (max-width: 900px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 560px) {
+  .grid {
+    grid-template-columns: 100%;
+  }
+}
