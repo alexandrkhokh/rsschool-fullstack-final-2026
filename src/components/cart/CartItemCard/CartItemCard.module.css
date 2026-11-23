@@ -8,6 +8,12 @@
   background-color: #ffffff;
 }
 
+.container {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
 .image {
   width: 80px;
   height: 80px;
@@ -75,4 +81,10 @@
 
 .removeBtn:hover {
   color: #ef4444;
+}
+
+@media (max-width: 560px) {
+  .card {
+    flex-wrap: wrap;
+  }
 }
