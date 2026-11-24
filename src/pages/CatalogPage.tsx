@@ -1,5 +1,5 @@
-import { useEffect, type JSX } from "react";
-import { getProducts } from "../api/getProducts";
+import { useEffect, type JSX } from 'react';
+import { getProducts } from '../api/getProducts';
 
 export const CatalogPage = (): JSX.Element => {
   useEffect(() => {

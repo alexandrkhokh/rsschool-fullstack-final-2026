@@ -1,40 +1,38 @@
-import type { JSX } from "react";
-import { EmptyCart } from "../components/cart/EmptyCart/EmptyCart";
-import styles from "./CartPage.module.css";
-import type { CartItem } from "../types/cart";
-import { CartItemCard } from "../components/cart/CartItemCard/CartItemCard";
-import { CartSummary } from "../components/cart/CartSummary";
-
-// Временные данные для проверки базового отображения UI
-const MOCK_CART_ITEMS: CartItem[] = [
-  {
-    id: 1,
-    title: "Беспроводные наушники Sony WH-1000XM5",
-    price: 32990,
-    image: "",
-    quantity: 1,
-  },
-  {
-    id: 2,
-    title: "Механическая клавиатура Keychron K2",
-    price: 11500,
-    image: "",
-    quantity: 2,
-  },
-];
+import type { JSX } from 'react';
+import { EmptyCart } from '../components/cart/EmptyCart/EmptyCart';
+import styles from './CartPage.module.css';
+import { CartItemCard } from '../components/cart/CartItemCard/CartItemCard';
+import { CartSummary } from '../components/cart/CartSummary';
+import { DEMO_PRODUCTS, useCartStore } from '../store/useCartStore';
+import { Button } from '../components/ui/Button/Button';
 
 export const CartPage = (): JSX.Element => {
-  const items = MOCK_CART_ITEMS;
+  const { addItem, items, incrementQuantity, decrementQuantity, removeItem, clearCart } =
+    useCartStore((state) => state);
+
+  const handleAddDemoProduct = () => {
+    DEMO_PRODUCTS.forEach((product) => addItem(product));
+  };
 
   if (items.length === 0) {
-    return <EmptyCart />;
+    return (
+      <div>
+        <EmptyCart />
+        <div style={{ textAlign: 'center', marginTop: '30px' }}>
+          <Button
+            variant="primary"
+            size="lg"
+            text="+ Добавить тестовый товар"
+            onClick={handleAddDemoProduct}
+          />
+        </div>
+      </div>
+    );
   }
 
   const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
-  const totalPrice = items.reduce(
-    (sum, item) => sum + item.price * item.quantity,
-    0,
-  );
+  const totalPrice = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const currency = items[0]?.currency ?? 'BYN';
 
   return (
     <section className={styles.container}>
@@ -42,10 +40,22 @@ export const CartPage = (): JSX.Element => {
       <div className={styles.grid}>
         <div className={styles.itemsList}>
           {items.map((item) => (
-            <CartItemCard key={item.id} item={item} />
+            <CartItemCard
+              key={item.id}
+              item={item}
+              onIncrement={incrementQuantity}
+              onDecrement={decrementQuantity}
+              onRemove={removeItem}
+            />
           ))}
         </div>
-        <CartSummary totalItems={totalItems} totalPrice={totalPrice} />
+
+        <CartSummary
+          totalItems={totalItems}
+          totalPrice={totalPrice}
+          currency={currency}
+          onClearCart={clearCart}
+        />
       </div>
     </section>
   );
