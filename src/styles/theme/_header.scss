@@ -1,0 +1,64 @@
+@use "../vars" as *;
+@use "../mixins" as *;
+@use "../typography" as *;
+
+header{
+  margin-bottom: 25px;
+  padding: 0;
+}
+
+footer {
+  padding: 20px;
+}
+
+header, footer {
+  position: relative;
+  border-bottom: 1px solid var(--gray-200);
+  box-shadow: 0 1px 2px var(--gray-200);
+  background: white;
+  color: var(--black);
+  z-index: 300;
+
+  .menu-top_header-container {
+    margin: 12px 0 10px;
+    @media (min-width: $xl) {
+      margin: 12px 0;
+    }
+  }
+
+  .nav-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    color: var(--black);
+    text-decoration: none;
+    border-bottom-width: 2px;
+    @include sm-text-medium;
+    @include transition(color 0.3s);
+    margin: 5px 7px;
+
+    @media (min-width: $lg) {
+      margin: 5px 10px;
+      font-size: 15px;
+      &:last-child {
+        margin-right: 0;
+      }
+    }
+
+    @media (hover) {
+      &:hover {
+        color: var(--accent);
+        @include transition(color 0.3s);
+      }
+    }
+
+    &:first-child {
+      margin-left: 0;
+    }
+
+    &.active {
+      color: var(--accent);
+    }
+  }
+
+}
