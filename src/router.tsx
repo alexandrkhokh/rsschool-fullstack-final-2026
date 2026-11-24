@@ -1,14 +1,14 @@
-import { createBrowserRouter } from "react-router-dom";
-import { Layout } from "./components/Layout";
-import { MainPage } from "./pages/MainPage";
-import { CatalogPage } from "./pages/CatalogPage";
-import { ProductPage } from "./pages/ProductPage";
-import { CartPage } from "./pages/CartPage";
-import { NotFoundPage } from "./pages/NotFoundPage";
+import { createBrowserRouter } from 'react-router-dom';
+import { Layout } from './components/Layout';
+import { MainPage } from './pages/MainPage';
+import { CatalogPage } from './pages/CatalogPage';
+import { ProductPage } from './pages/ProductPage';
+import { CartPage } from './pages/CartPage';
+import { NotFoundPage } from './pages/NotFoundPage';
 
 export const router = createBrowserRouter([
   {
-    path: "/",
+    path: '/',
     element: <Layout />,
     children: [
       {
@@ -16,19 +16,19 @@ export const router = createBrowserRouter([
         element: <MainPage />,
       },
       {
-        path: "catalog",
+        path: 'catalog',
         element: <CatalogPage />,
       },
       {
-        path: "catalog/:id",
+        path: 'catalog/:id',
         element: <ProductPage />,
       },
       {
-        path: "cart",
+        path: 'cart',
         element: <CartPage />,
       },
       {
-        path: "*", // Перехватит все несуществующие маршруты
+        path: '*', // Перехватит все несуществующие маршруты
         element: <NotFoundPage />,
       },
     ],
