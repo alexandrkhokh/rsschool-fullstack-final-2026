@@ -1,0 +1,19 @@
+@use "./reset";
+@use "./vars" as *;
+@use "./mixins" as *;
+
+@use "colors-functions";
+@use "./typography";
+@use "./grid";
+@use "./utilities";
+
+@use "./theme/woocommerce/archive-card";
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    background: var(--gray-100);
+    color: var(--black);
+}

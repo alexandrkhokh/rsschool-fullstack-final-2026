@@ -1,0 +1,108 @@
+@use "../../vars" as *;
+@use "../../mixins" as *;
+@use "../../typography" as *;
+@use "../../utilities" as *;
+
+.ep-product-card {
+    @include product-card-template;
+    a {
+        color: var(--black);
+
+        @media (hover: hover) {
+            &:hover {
+                color: var(--black);
+
+                .product-card__title {
+                    color: var(--black);
+                }
+            }
+        }
+    }
+
+    .product-card__content {
+        background: white;
+        padding: 25px 10px 20px;
+        @include flex-column-sb;
+        @media (min-width: $md) {
+            padding: 0 20px 20px;
+            min-height: 100px;
+        }
+
+        .product-card__title {
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+
+        .product-attribute {
+            @include sm-text-normal;
+            width: 100%;
+        }
+
+        .price {
+            display: block;
+            margin-top: 15px;
+            margin-bottom: 10px;
+            @include xl-text-bold;
+            color: var(--black);
+        }
+    }
+    .product-card__title {
+        font-size: 17px;
+        font-weight: 500;
+        line-height: 110%;
+        margin-bottom: 0;
+        letter-spacing: 0.01em;
+        @include transition(color 0.3s);
+        @media (min-width: $lg) {
+            margin-bottom: 5px;
+        }
+        @media (min-width: $xl) {
+            line-height: 130%;
+            margin-bottom: 10px;
+        }
+    }
+
+    .product-card__img {
+        height: 160px;
+        position: relative;
+        padding-top: 20px;
+        @include flex-center;
+        @media (min-width: $md) {
+            max-width: 100%;
+        }
+        img {
+            max-width: 80%;
+            max-height: 100%;
+            width: auto;
+        }
+    }
+    a:hover {
+        .product-card__title,
+        .price {
+            color: var(--accent);
+            @include transition(color 0.3s);
+        }
+    }
+}
+
+// Сетка карточек в каталоге
+.products__cards-row .row {
+    margin-left: 0;
+    margin-right: 0;
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    grid-gap: 10px;
+    @media (min-width: $sm) {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    @media (min-width: $md) {
+        grid-gap: 15px;
+    }
+    @media (min-width: $lg) {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    @media (min-width: $xl) {
+        grid-template-columns: repeat(4, 1fr);
+        grid-gap: 20px;
+    }
+}

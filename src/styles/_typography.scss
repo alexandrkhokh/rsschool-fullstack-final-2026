@@ -1,0 +1,114 @@
+@use "vars" as *;
+
+// 1. HEADING FONT
+// 2. TYPO SIZE
+// 3. HEADINGS
+
+*,
+html,
+body,
+div,
+p,
+li {
+    font-family: $text-font;
+}
+
+@mixin ff-headings {
+    font: {
+        family: $heading-font;
+        style: normal;
+        weight: $bold-weight;
+    }
+}
+
+// РАЗМЕРЫ ТЕКСТА
+// XL - EXTRA LARGE
+@mixin xl-text-size {
+    font-size: 20px;
+    @media (min-width: $md) {
+        font-size: 21px;
+    }
+    @media (min-width: $xl) {
+        font-size: 22px;
+    }
+}
+
+@mixin xl-text-bold {
+    @include xl-text-size;
+    font-weight: 700;
+}
+
+// SM - SMALL
+@mixin sm-text-size {
+    font-size: 12px;
+    @media (min-width: $xl) {
+        font-size: 14px;
+    }
+}
+
+@mixin sm-text-normal {
+    font-weight: 400;
+    line-height: 150%;
+    letter-spacing: 0.02em;
+    @include sm-text-size;
+    @media (min-width: $xl) {
+        line-height: 160%;
+    }
+}
+
+// MD - MIDDLE
+@mixin md-text-size {
+    font-size: 14px;
+    @media (min-width: $md) {
+        font-size: 15px;
+    }
+}
+
+@mixin md-text-normal {
+    font-weight: 400;
+    line-height: 150%;
+    @include md-text-size;
+}
+
+// РАЗМЕРЫ ЗАГОЛОВКОВ
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    @include ff-headings;
+    letter-spacing: -0.02em;
+    line-height: 1.1em;
+}
+h2,
+h3,
+h4,
+h5,
+h6 {
+    margin-top: 0;
+    margin-bottom: 0.5em;
+}
+h1 {
+    font-size: calc(1.375rem + 1.5vw);
+    margin-top: 0.5rem;
+    margin-bottom: 0.75em;
+    @media (min-width: $xl) {
+        font-size: 2.5em;
+        line-height: 1.2em;
+    }
+}
+h2 {
+    font-size: calc(1.325rem + 0.9vw);
+    letter-spacing: 0.015em;
+    line-height: 1.2em;
+    @media (min-width: $xl) {
+        font-size: 2rem;
+        letter-spacing: -0.01em;
+    }
+}
+
+p,
+div {
+    @include md-text-normal;
+}

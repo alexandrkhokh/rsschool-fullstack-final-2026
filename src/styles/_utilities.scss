@@ -1,0 +1,20 @@
+@use "vars" as *;
+
+@mixin flex-center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+@mixin flex-column-sb {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+// ОТСТУПЫ (margin-bottom)
+@each $size, $length in $spacers {
+    .mb-#{$size} {
+        margin-bottom: $length !important;
+    }
+}

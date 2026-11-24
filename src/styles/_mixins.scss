@@ -1,0 +1,49 @@
+@use "vars" as *;
+
+@mixin shadow-border {
+    & {
+        box-shadow:
+            1px 1px 1px 0 var(--gray-200),
+            2px 2px 5px 0 var(--gray-200);
+        @content;
+    }
+}
+
+@mixin transition($property...) {
+    & {
+        transition: $property $transition;
+        @content;
+    }
+}
+
+@mixin product-card-template {
+    display: inline-block;
+    position: relative;
+    background: white;
+    cursor: pointer;
+    border-radius: $border-radius;
+    overflow: hidden;
+    width: 100%;
+    @include shadow-border;
+    transform: scale(1);
+    @include transition(transform 0.3s);
+
+    @media (hover: hover) {
+        &:hover {
+            @media (min-width: $lg) {
+                transform: scale(1.02);
+                @include transition(transform 0.3s);
+            }
+        }
+    }
+
+    a {
+        color: var(--black);
+        text-decoration: none;
+        @media (hover: hover) {
+            &:hover {
+                text-decoration: none;
+            }
+        }
+    }
+}
