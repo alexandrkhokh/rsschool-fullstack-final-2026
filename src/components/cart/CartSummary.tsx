@@ -1,16 +1,13 @@
-import type { JSX } from "react";
-import styles from "./CartSummary.module.css";
-import { Button } from "../ui/Button/Button";
+import type { JSX } from 'react';
+import styles from './CartSummary.module.css';
+import { Button } from '../ui/Button/Button';
 
 interface CartSummaryProps {
   totalItems: number;
   totalPrice: number;
 }
 
-export const CartSummary = ({
-  totalItems,
-  totalPrice,
-}: CartSummaryProps): JSX.Element => {
+export const CartSummary = ({ totalItems, totalPrice }: CartSummaryProps): JSX.Element => {
   return (
     <aside className={styles.summary}>
       <h2 className={styles.heading}>Итого</h2>

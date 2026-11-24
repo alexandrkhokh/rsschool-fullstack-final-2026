@@ -1,13 +1,10 @@
-import type { ButtonHTMLAttributes, JSX } from "react";
-import styles from "./Button.module.css";
+import type { ButtonHTMLAttributes, JSX } from 'react';
+import styles from './Button.module.css';
 
-type ButtonVariant = "primary" | "secondary" | "ghost" | "danger";
-type ButtonSize = "sm" | "md" | "lg";
+type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'danger';
+type ButtonSize = 'sm' | 'md' | 'lg';
 
-interface ButtonProps extends Omit<
-  ButtonHTMLAttributes<HTMLButtonElement>,
-  "children"
-> {
+interface ButtonProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'children'> {
   text: string;
   variant?: ButtonVariant;
   size?: ButtonSize;
@@ -16,22 +13,22 @@ interface ButtonProps extends Omit<
 
 export const Button = ({
   text,
-  variant = "primary",
-  size = "md",
+  variant = 'primary',
+  size = 'md',
   fullWidth = false,
-  type = "button",
-  className = "",
+  type = 'button',
+  className = '',
   ...props
 }: ButtonProps): JSX.Element => {
   const buttonClasses = [
     styles.button,
     styles[variant],
     styles[size],
-    fullWidth ? styles.fullWidth : "",
+    fullWidth ? styles.fullWidth : '',
     className,
   ]
     .filter(Boolean)
-    .join(" ");
+    .join(' ');
 
   return (
     <button type={type} className={buttonClasses} {...props}>

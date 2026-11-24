@@ -1,5 +1,5 @@
-import { useParams } from "react-router-dom";
-import type { JSX } from "react";
+import { useParams } from 'react-router-dom';
+import type { JSX } from 'react';
 
 export const ProductPage = (): JSX.Element => {
   // Извлекаем динамический параметр :id из URL

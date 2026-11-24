@@ -1,24 +1,24 @@
-import type { JSX } from "react";
-import { EmptyCart } from "../components/cart/EmptyCart/EmptyCart";
-import styles from "./CartPage.module.css";
-import type { CartItem } from "../types/cart";
-import { CartItemCard } from "../components/cart/CartItemCard/CartItemCard";
-import { CartSummary } from "../components/cart/CartSummary";
+import type { JSX } from 'react';
+import { EmptyCart } from '../components/cart/EmptyCart/EmptyCart';
+import styles from './CartPage.module.css';
+import type { CartItem } from '../types/cart';
+import { CartItemCard } from '../components/cart/CartItemCard/CartItemCard';
+import { CartSummary } from '../components/cart/CartSummary';
 
 // Временные данные для проверки базового отображения UI
 const MOCK_CART_ITEMS: CartItem[] = [
   {
     id: 1,
-    title: "Беспроводные наушники Sony WH-1000XM5",
+    title: 'Беспроводные наушники Sony WH-1000XM5',
     price: 32990,
-    image: "",
+    image: '',
     quantity: 1,
   },
   {
     id: 2,
-    title: "Механическая клавиатура Keychron K2",
+    title: 'Механическая клавиатура Keychron K2',
     price: 11500,
-    image: "",
+    image: '',
     quantity: 2,
   },
 ];
@@ -31,10 +31,7 @@ export const CartPage = (): JSX.Element => {
   }
 
   const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
-  const totalPrice = items.reduce(
-    (sum, item) => sum + item.price * item.quantity,
-    0,
-  );
+  const totalPrice = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
   return (
     <section className={styles.container}>
