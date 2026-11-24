@@ -3,20 +3,21 @@ import {getProducts} from "../api/getProducts.ts";
 import { type JSX, useEffect, useState } from "react";
 import { type Product } from '../types/product';
 import ArchiveProductCard from "../components/ArchiveProductCard.tsx";
+import Pagination from "../components/Pagination.tsx";
 
 const PER_PAGE = 12;
 
 export const CatalogPage = (): JSX.Element => {
   const [products, setProducts] = useState<Product[]>([]);
-  // const [totalPages, setTotalPages] = useState(0);
-  const [page] = useState(1);
+  const [totalPages, setTotalPages] = useState(0);
+  const [page, setPage] = useState(1);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     getProducts(page, PER_PAGE)
       .then(({products}) => {
         setProducts(products);
-        // setTotalPages(totalPages);
+        setTotalPages(totalPages);
         setError(null);
       })
       .catch((e) => {
@@ -44,6 +45,7 @@ export const CatalogPage = (): JSX.Element => {
             </div>
           </div>
         </div>
+        <Pagination page={page} totalPages={totalPages} setPage={setPage} />
       </div>
     </main>
   );

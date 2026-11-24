@@ -70,6 +70,13 @@ li {
     @include md-text-size;
 }
 
+@mixin md-text-medium {
+    font-weight: 500;
+    line-height: 150%;
+    letter-spacing: 0.01em;
+    @include md-text-size;
+}
+
 // РАЗМЕРЫ ЗАГОЛОВКОВ
 h1,
 h2,
