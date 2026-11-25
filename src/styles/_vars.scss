@@ -1,0 +1,47 @@
+// BREAKPOINTS
+$xs: 480px;
+$sm: 576px;
+$md: 768px;
+$lg: 1024px;
+$xl: 1400px;
+$xxl: 1500px;
+
+// TRANSITIONS
+$transition: cubic-bezier(0.35, 0, 0, 1.01);
+
+$border-radius: 16px;
+
+// THEME FONTS
+$heading-font: "Geist", sans-serif;
+$text-font: "Geist", sans-serif;
+
+$bold-weight: 600;
+
+$grid-gutters: (
+    "xs": 20px,
+    "sm": 24px,
+    "md": 30px,
+    "lg": 32px,
+    "xl": 34px,
+    "xxl": 36px,
+) !default;
+
+$grid-breakpoints: (
+    "xs": 0,
+    "sm": $sm,
+    "md": $md,
+    "lg": $lg,
+    "xl": $xl,
+    "xxl": $xxl,
+) !default;
+
+// ОТСТУПЫ
+$spacer: 1rem !default;
+$spacers: (
+    0: 0,
+    1: $spacer * 0.25,
+    2: $spacer * 0.5,
+    3: $spacer,
+    4: $spacer * 1.5,
+    5: $spacer * 3,
+) !default;

@@ -1,0 +1,39 @@
+@use "../vars" as *;
+@use "../mixins" as *;
+@use "../typography" as *;
+@use "../utilities" as *;
+
+// Pagination
+.factewp-pager {
+    @include flex-center;
+    gap: 7px;
+    margin-top: 30px;
+    margin-bottom: 50px;
+
+    button,
+    span {
+        display: inline-block;
+        padding: 5px 12px;
+        background-color: white;
+        border: 0;
+        border-radius: $border-radius * 2;
+        min-width: 35px;
+        text-align: center;
+        text-decoration: none;
+        color: var(--black);
+        @include shadow-border;
+        @include md-text-medium;
+    }
+
+    button:hover {
+        background-color: var(--accent);
+        color: white;
+    }
+
+    // текущая страница
+    span {
+        background-color: var(--accent);
+        color: white;
+        cursor: context-menu;
+    }
+}

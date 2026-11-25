@@ -1,0 +1,33 @@
+@use "vars" as *;
+
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@mixin flex-column-sb {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+@mixin flex-sb-aic {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.flex-sb-aic {
+  @include flex-sb-aic
+}
+
+// ОТСТУПЫ (margin-bottom)
+@each $size, $length in $spacers {
+  .mt-#{$size} {
+    margin-top: $length !important;
+  }
+  .mb-#{$size} {
+    margin-bottom: $length !important;
+  }
+}

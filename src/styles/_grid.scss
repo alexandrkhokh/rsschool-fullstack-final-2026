@@ -1,0 +1,76 @@
+@use "sass:map";
+@use "vars" as *;
+
+// CONTAINERS
+$container-max-widths: (
+    "sm": $sm - map.get($grid-gutters, "sm"),
+    "md": $md - map.get($grid-gutters, "md"),
+    "lg": $lg - map.get($grid-gutters, "lg"),
+    "xl": $xl - map.get($grid-gutters, "xl"),
+    "xxl": $xxl - map.get($grid-gutters, "xxl"),
+) !default;
+
+.container {
+    width: 100%;
+    margin-right: auto;
+    margin-left: auto;
+    max-width: $xs - map.get($grid-gutters, "xs");
+    padding-left: calc(#{map.get($grid-gutters, "xs")} / 2);
+    padding-right: calc(#{map.get($grid-gutters, "xs")} / 2);
+
+    @each $breakpoint, $width in $grid-breakpoints {
+        @if $breakpoint != "xs" {
+            @media (min-width: #{$width}) {
+                max-width: map.get($container-max-widths, $breakpoint);
+                padding-left: calc(#{map.get($grid-gutters, $breakpoint)} / 2);
+                padding-right: calc(#{map.get($grid-gutters, $breakpoint)} / 2);
+            }
+        }
+    }
+}
+
+.row {
+    display: flex;
+    flex-wrap: wrap;
+    margin-left: calc(-#{map.get($grid-gutters, "xs")} / 2);
+    margin-right: calc(-#{map.get($grid-gutters, "xs")} / 2);
+
+    @each $breakpoint, $width in $grid-breakpoints {
+        @if $breakpoint != "xs" {
+            @media (min-width: #{$width}) {
+                margin-left: calc(-#{map.get($grid-gutters, $breakpoint)} / 2);
+                margin-right: calc(-#{map.get($grid-gutters, $breakpoint)} / 2);
+            }
+        }
+    }
+}
+
+[class*="col-"] {
+    display: block;
+    width: 100%;
+    padding-left: calc(#{map.get($grid-gutters, "xs")} / 2);
+    padding-right: calc(#{map.get($grid-gutters, "xs")} / 2);
+
+    @each $breakpoint, $width in $grid-breakpoints {
+        @if $breakpoint != "xs" {
+            @media (min-width: #{$width}) {
+                padding-left: calc(#{map.get($grid-gutters, $breakpoint)} / 2);
+                padding-right: calc(#{map.get($grid-gutters, $breakpoint)} / 2);
+            }
+        }
+    }
+}
+
+// Колонки
+@each $breakpoint, $width in $grid-breakpoints {
+    @if $breakpoint != "xs" {
+        @for $i from 1 through 12 {
+            .col-#{$breakpoint}-#{$i} {
+                @media (min-width: #{$width}) {
+                    display: block;
+                    width: calc(#{$i} * 100% / 12);
+                }
+            }
+        }
+    }
+}
