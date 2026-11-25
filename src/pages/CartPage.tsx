@@ -3,7 +3,8 @@ import { EmptyCart } from '../components/cart/EmptyCart/EmptyCart';
 import styles from './CartPage.module.css';
 import { CartItemCard } from '../components/cart/CartItemCard/CartItemCard';
 import { CartSummary } from '../components/cart/CartSummary';
-import { DEMO_PRODUCTS, useCartStore } from '../store/useCartStore';
+import { useCartStore } from '../store/useCartStore';
+import { DEMO_PRODUCTS } from '../store/promoCodes';
 import { Button } from '../components/ui/Button/Button';
 
 export const CartPage = (): JSX.Element => {
