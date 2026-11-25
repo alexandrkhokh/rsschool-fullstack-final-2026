@@ -40,6 +40,8 @@ export const useCartStore = create<CartState>()(
   persist(
     (set, get) => ({
       items: [],
+      promoCode: null,
+      discountPercent: 0,
 
       addItem: (product) =>
         set((state) => {
@@ -83,6 +85,16 @@ export const useCartStore = create<CartState>()(
 
       getTotalPrice: () =>
         get().items.reduce((total, item) => total + item.price * item.quantity, 0),
+
+      applyPromoCode: () => ({ success: false, message: '' }),
+
+      removePromoCode: () => {},
+
+      getSubtotalPrice: () => {
+        return get().items.reduce((total, item) => total + item.price * item.quantity, 0);
+      },
+
+      getDiscountAmount: () => 0,
     }),
     {
       name: 'shopping-cart-storage',
