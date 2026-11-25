@@ -128,13 +128,18 @@ describe('useCartStore', () => {
     expect(rawStorage).not.toBeNull();
 
     const parsed = JSON.parse(rawStorage as string);
-    expect(Object.keys(parsed.state)).toEqual(['items']);
+    expect(Object.keys(parsed.state)).toEqual(['items', 'promoCode', 'discountPercent']);
     expect(parsed.state.items).toHaveLength(1);
     expect(parsed.state.items[0].id).toBe(101);
   });
 });
 
 describe('промокоды и расчёт скидки', () => {
+  beforeEach(() => {
+    localStorage.clear();
+    useCartStore.setState({ items: [], promoCode: null, discountPercent: 0 });
+  });
+
   it('11. применяет валидный промокод (включая нижний регистр и пробелы) и пересчитывает итоговую сумму', () => {
     const { addItem, applyPromoCode } = useCartStore.getState();
     addItem(mockProduct2); // цена 400
