@@ -20,7 +20,7 @@ export async function getProducts(page = 1, perPage = 12): Promise<ProductsResul
   if (!res.ok) {
     throw new Error(`Store API error ${res.status}`);
   }
-
+  
   return {
     products: await res.json(),
     total: Number(res.headers.get("X-WP-Total") ?? 0),
