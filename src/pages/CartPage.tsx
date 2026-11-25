@@ -4,12 +4,9 @@ import styles from './CartPage.module.css';
 import { CartItemCard } from '../components/cart/CartItemCard/CartItemCard';
 import { CartSummary } from '../components/cart/CartSummary';
 import { useCartStore } from '../store/useCartStore';
-import { DEMO_PRODUCTS } from '../store/promoCodes';
-import { Button } from '../components/ui/Button/Button';
 
 export const CartPage = (): JSX.Element => {
   const {
-    addItem,
     items,
     promoCode,
     discountPercent,
@@ -25,24 +22,8 @@ export const CartPage = (): JSX.Element => {
     removePromoCode,
   } = useCartStore((state) => state);
 
-  const handleAddDemoProduct = () => {
-    DEMO_PRODUCTS.forEach((product) => addItem(product));
-  };
-
   if (items.length === 0) {
-    return (
-      <div>
-        <EmptyCart />
-        <div style={{ textAlign: 'center', marginTop: '30px' }}>
-          <Button
-            variant="primary"
-            size="lg"
-            text="+ Добавить тестовый товар"
-            onClick={handleAddDemoProduct}
-          />
-        </div>
-      </div>
-    );
+    return <EmptyCart />;
   }
 
   const currency = items[0]?.currency ?? 'BYN';
