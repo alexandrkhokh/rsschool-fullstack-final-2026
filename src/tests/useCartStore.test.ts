@@ -31,8 +31,8 @@ describe('useCartStore', () => {
     const state = useCartStore.getState();
 
     expect(state.items).toEqual([]);
-    expect(state.getTotalItems()).toBe(0);
-    expect(state.getTotalPrice()).toBe(0);
+    expect(state.totalItems).toBe(0);
+    expect(state.totalPrice).toBe(0);
   });
 
   it('2. добавляет новый товар с quantity = 1', () => {
@@ -117,8 +117,8 @@ describe('useCartStore', () => {
     addItem(mockProduct2); // 400 * 1 = 400
 
     const state = useCartStore.getState();
-    expect(state.getTotalItems()).toBe(3);
-    expect(state.getTotalPrice()).toBe(701);
+    expect(state.totalItems).toBe(3);
+    expect(state.totalPrice).toBe(701);
   });
 
   it('10. сохраняет в localStorage только массив items', () => {
@@ -150,8 +150,8 @@ describe('промокоды и расчёт скидки', () => {
     expect(result.success).toBe(true);
     expect(state.promoCode).toBe('SALE10');
     expect(state.discountPercent).toBe(10);
-    expect(state.getDiscountAmount()).toBe(40); // 10% от 400
-    expect(state.getTotalPrice()).toBe(360); // 400 - 40
+    expect(state.discountAmount).toBe(40); // 10% от 400
+    expect(state.totalPrice).toBe(360); // 400 - 40
   });
 
   it('12. при вводе неизвестного промокода возвращает ошибку и не меняет сумму', () => {
@@ -163,8 +163,8 @@ describe('промокоды и расчёт скидки', () => {
 
     expect(result.success).toBe(false);
     expect(state.promoCode).toBeNull();
-    expect(state.getDiscountAmount()).toBe(0);
-    expect(state.getTotalPrice()).toBe(400);
+    expect(state.discountAmount).toBe(0);
+    expect(state.totalPrice).toBe(400);
   });
 
   it('13. защищает от повторного применения того же промокода и не суммирует скидку', () => {
@@ -177,7 +177,7 @@ describe('промокоды и расчёт скидки', () => {
 
     expect(secondAttempt.success).toBe(false);
     expect(state.discountPercent).toBe(10); // Не 20%!
-    expect(state.getTotalPrice()).toBe(360);
+    expect(state.totalPrice).toBe(360);
   });
 
   it('14. динамически пересчитывает скидку при изменении количества или удалении товара (DoD)', () => {
@@ -188,8 +188,8 @@ describe('промокоды и расчёт скидки', () => {
     incrementQuantity(102); // теперь 2 шт = 800
     const state = useCartStore.getState();
 
-    expect(state.getDiscountAmount()).toBe(80); // 10% от 800
-    expect(state.getTotalPrice()).toBe(720); // 800 - 80
+    expect(state.discountAmount).toBe(80); // 10% от 800
+    expect(state.totalPrice).toBe(720); // 800 - 80
   });
 
   it('15. сбрасывает применённый промокод при очистке корзины (DoD)', () => {
@@ -202,6 +202,6 @@ describe('промокоды и расчёт скидки', () => {
 
     expect(state.promoCode).toBeNull();
     expect(state.discountPercent).toBe(0);
-    expect(state.getDiscountAmount()).toBe(0);
+    expect(state.discountAmount).toBe(0);
   });
 });

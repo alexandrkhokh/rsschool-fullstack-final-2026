@@ -14,7 +14,14 @@ export interface PromoCodeResult {
   message: string;
 }
 
-export interface CartState {
+export interface CartTotals {
+  totalItems: number;
+  subtotalPrice: number;
+  discountAmount: number;
+  totalPrice: number;
+}
+
+export interface CartState extends CartTotals {
   items: CartItem[];
   promoCode: string | null;
   discountPercent: number;
@@ -25,8 +32,17 @@ export interface CartState {
   clearCart: () => void;
   applyPromoCode: (code: string) => PromoCodeResult;
   removePromoCode: () => void;
-  getTotalItems: () => number;
-  getSubtotalPrice: () => number;
-  getDiscountAmount: () => number;
-  getTotalPrice: () => number;
+}
+
+export interface CartSummaryProps {
+  totalItems: number;
+  subtotalPrice: number;
+  discountAmount: number;
+  discountPercent: number;
+  appliedPromoCode: string | null;
+  totalPrice: number;
+  currency?: string;
+  onApplyPromoCode: (code: string) => PromoCodeResult;
+  onRemovePromoCode: () => void;
+  onClearCart?: () => void;
 }

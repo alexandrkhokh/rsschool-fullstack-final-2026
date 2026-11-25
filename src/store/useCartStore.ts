@@ -2,7 +2,8 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import type { CartState } from '../types/cart';
 import { mapProductToCartItem } from '../utils/mapProductToCartItem';
-import { PROMO_CODES } from './promoCodes';
+import { INITIAL_TOTALS, PROMO_CODES } from './promoCodes';
+import { calculateTotals } from '../utils/calculateTotals';
 
 export const useCartStore = create<CartState>()(
   persist(
@@ -10,48 +11,72 @@ export const useCartStore = create<CartState>()(
       items: [],
       promoCode: null,
       discountPercent: 0,
+      ...INITIAL_TOTALS,
 
       addItem: (product) =>
         set((state) => {
           const existingItem = state.items.find((item) => item.id === product.id);
-
-          if (existingItem) {
-            return {
-              items: state.items.map((item) =>
+          const updatedItems = existingItem
+            ? state.items.map((item) =>
                 item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
-              ),
-            };
-          }
+              )
+            : [...state.items, mapProductToCartItem(product, 1)];
 
           return {
-            items: [...state.items, mapProductToCartItem(product, 1)],
+            items: updatedItems,
+            ...calculateTotals(updatedItems, state.discountPercent),
           };
         }),
 
       incrementQuantity: (id) =>
-        set((state) => ({
-          items: state.items.map((item) =>
+        set((state) => {
+          const updatedItems = state.items.map((item) =>
             item.id === id ? { ...item, quantity: item.quantity + 1 } : item
-          ),
-        })),
+          );
+
+          return {
+            items: updatedItems,
+            ...calculateTotals(updatedItems, state.discountPercent),
+          };
+        }),
 
       decrementQuantity: (id) =>
-        set((state) => ({
-          items: state.items.map((item) =>
+        set((state) => {
+          const updatedItems = state.items.map((item) =>
             item.id === id && item.quantity > 1 ? { ...item, quantity: item.quantity - 1 } : item
-          ),
-        })),
+          );
+
+          return {
+            items: updatedItems,
+            ...calculateTotals(updatedItems, state.discountPercent),
+          };
+        }),
 
       removeItem: (id) =>
         set((state) => {
           const updatedItems = state.items.filter((item) => item.id !== id);
           if (updatedItems.length === 0) {
-            return { items: [], promoCode: null, discountPercent: 0 };
+            return {
+              items: [],
+              promoCode: null,
+              discountPercent: 0,
+              ...INITIAL_TOTALS,
+            };
           }
-          return { items: updatedItems };
+
+          return {
+            items: updatedItems,
+            ...calculateTotals(updatedItems, state.discountPercent),
+          };
         }),
 
-      clearCart: () => set({ items: [], promoCode: null, discountPercent: 0 }),
+      clearCart: () =>
+        set({
+          items: [],
+          promoCode: null,
+          discountPercent: 0,
+          ...INITIAL_TOTALS,
+        }),
 
       applyPromoCode: (rawCode) => {
         const normalizedCode = rawCode.trim().toUpperCase();
@@ -73,7 +98,11 @@ export const useCartStore = create<CartState>()(
           return { success: false, message: 'Неверный или недействительный промокод' };
         }
 
-        set({ promoCode: normalizedCode, discountPercent: discount });
+        set((state) => ({
+          promoCode: normalizedCode,
+          discountPercent: discount,
+          ...calculateTotals(state.items, discount),
+        }));
 
         return {
           success: true,
@@ -81,24 +110,12 @@ export const useCartStore = create<CartState>()(
         };
       },
 
-      removePromoCode: () => set({ promoCode: null, discountPercent: 0 }),
-
-      getTotalItems: () => get().items.reduce((total, item) => total + item.quantity, 0),
-
-      getSubtotalPrice: () =>
-        get().items.reduce((total, item) => total + item.price * item.quantity, 0),
-
-      getDiscountAmount: () => {
-        const subtotal = get().getSubtotalPrice();
-        const discount = get().discountPercent;
-        return Number(((subtotal * discount) / 100).toFixed(2));
-      },
-
-      getTotalPrice: () => {
-        const subtotal = get().getSubtotalPrice();
-        const discountAmount = get().getDiscountAmount();
-        return Number((subtotal - discountAmount).toFixed(2));
-      },
+      removePromoCode: () =>
+        set((state) => ({
+          promoCode: null,
+          discountPercent: 0,
+          ...calculateTotals(state.items, 0),
+        })),
     }),
     {
       name: 'shopping-cart-storage',
@@ -107,6 +124,12 @@ export const useCartStore = create<CartState>()(
         promoCode: state.promoCode,
         discountPercent: state.discountPercent,
       }),
+      // Пересчитываем totals при восстановлении данных из localStorage
+      onRehydrateStorage: () => (state) => {
+        if (state) {
+          Object.assign(state, calculateTotals(state.items, state.discountPercent));
+        }
+      },
     }
   )
 );

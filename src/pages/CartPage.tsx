@@ -8,8 +8,22 @@ import { DEMO_PRODUCTS } from '../store/promoCodes';
 import { Button } from '../components/ui/Button/Button';
 
 export const CartPage = (): JSX.Element => {
-  const { addItem, items, incrementQuantity, decrementQuantity, removeItem, clearCart } =
-    useCartStore((state) => state);
+  const {
+    addItem,
+    items,
+    promoCode,
+    discountPercent,
+    totalItems,
+    subtotalPrice,
+    discountAmount,
+    totalPrice,
+    incrementQuantity,
+    decrementQuantity,
+    removeItem,
+    clearCart,
+    applyPromoCode,
+    removePromoCode,
+  } = useCartStore((state) => state);
 
   const handleAddDemoProduct = () => {
     DEMO_PRODUCTS.forEach((product) => addItem(product));
@@ -31,8 +45,6 @@ export const CartPage = (): JSX.Element => {
     );
   }
 
-  const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
-  const totalPrice = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
   const currency = items[0]?.currency ?? 'BYN';
 
   return (
@@ -53,8 +65,14 @@ export const CartPage = (): JSX.Element => {
 
         <CartSummary
           totalItems={totalItems}
+          subtotalPrice={subtotalPrice}
+          discountAmount={discountAmount}
+          discountPercent={discountPercent}
+          appliedPromoCode={promoCode}
           totalPrice={totalPrice}
           currency={currency}
+          onApplyPromoCode={applyPromoCode}
+          onRemovePromoCode={removePromoCode}
           onClearCart={clearCart}
         />
       </div>
