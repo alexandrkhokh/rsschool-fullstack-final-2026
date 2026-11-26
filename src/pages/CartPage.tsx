@@ -3,35 +3,29 @@ import { EmptyCart } from '../components/cart/EmptyCart/EmptyCart';
 import styles from './CartPage.module.css';
 import { CartItemCard } from '../components/cart/CartItemCard/CartItemCard';
 import { CartSummary } from '../components/cart/CartSummary';
-import { DEMO_PRODUCTS, useCartStore } from '../store/useCartStore';
-import { Button } from '../components/ui/Button/Button';
+import { useCartStore } from '../store/useCartStore';
 
 export const CartPage = (): JSX.Element => {
-  const { addItem, items, incrementQuantity, decrementQuantity, removeItem, clearCart } =
-    useCartStore((state) => state);
-
-  const handleAddDemoProduct = () => {
-    DEMO_PRODUCTS.forEach((product) => addItem(product));
-  };
+  const {
+    items,
+    promoCode,
+    discountPercent,
+    totalItems,
+    subtotalPrice,
+    discountAmount,
+    totalPrice,
+    incrementQuantity,
+    decrementQuantity,
+    removeItem,
+    clearCart,
+    applyPromoCode,
+    removePromoCode,
+  } = useCartStore((state) => state);
 
   if (items.length === 0) {
-    return (
-      <div>
-        <EmptyCart />
-        <div style={{ textAlign: 'center', marginTop: '30px' }}>
-          <Button
-            variant="primary"
-            size="lg"
-            text="+ Добавить тестовый товар"
-            onClick={handleAddDemoProduct}
-          />
-        </div>
-      </div>
-    );
+    return <EmptyCart />;
   }
 
-  const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
-  const totalPrice = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
   const currency = items[0]?.currency ?? 'BYN';
 
   return (
@@ -52,8 +46,14 @@ export const CartPage = (): JSX.Element => {
 
         <CartSummary
           totalItems={totalItems}
+          subtotalPrice={subtotalPrice}
+          discountAmount={discountAmount}
+          discountPercent={discountPercent}
+          appliedPromoCode={promoCode}
           totalPrice={totalPrice}
           currency={currency}
+          onApplyPromoCode={applyPromoCode}
+          onRemovePromoCode={removePromoCode}
           onClearCart={clearCart}
         />
       </div>

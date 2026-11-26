@@ -31,8 +31,8 @@ describe('useCartStore', () => {
     const state = useCartStore.getState();
 
     expect(state.items).toEqual([]);
-    expect(state.getTotalItems()).toBe(0);
-    expect(state.getTotalPrice()).toBe(0);
+    expect(state.totalItems).toBe(0);
+    expect(state.totalPrice).toBe(0);
   });
 
   it('2. добавляет новый товар с quantity = 1', () => {
@@ -117,8 +117,8 @@ describe('useCartStore', () => {
     addItem(mockProduct2); // 400 * 1 = 400
 
     const state = useCartStore.getState();
-    expect(state.getTotalItems()).toBe(3);
-    expect(state.getTotalPrice()).toBe(701);
+    expect(state.totalItems).toBe(3);
+    expect(state.totalPrice).toBe(701);
   });
 
   it('10. сохраняет в localStorage только массив items', () => {
@@ -128,8 +128,80 @@ describe('useCartStore', () => {
     expect(rawStorage).not.toBeNull();
 
     const parsed = JSON.parse(rawStorage as string);
-    expect(Object.keys(parsed.state)).toEqual(['items']);
+    expect(Object.keys(parsed.state)).toEqual(['items', 'promoCode', 'discountPercent']);
     expect(parsed.state.items).toHaveLength(1);
     expect(parsed.state.items[0].id).toBe(101);
+  });
+});
+
+describe('промокоды и расчёт скидки', () => {
+  beforeEach(() => {
+    localStorage.clear();
+    useCartStore.setState({ items: [], promoCode: null, discountPercent: 0 });
+  });
+
+  it('11. применяет валидный промокод (включая нижний регистр и пробелы) и пересчитывает итоговую сумму', () => {
+    const { addItem, applyPromoCode } = useCartStore.getState();
+    addItem(mockProduct2); // цена 400
+
+    const result = applyPromoCode('  sale10  ');
+    const state = useCartStore.getState();
+
+    expect(result.success).toBe(true);
+    expect(state.promoCode).toBe('SALE10');
+    expect(state.discountPercent).toBe(10);
+    expect(state.discountAmount).toBe(40); // 10% от 400
+    expect(state.totalPrice).toBe(360); // 400 - 40
+  });
+
+  it('12. при вводе неизвестного промокода возвращает ошибку и не меняет сумму', () => {
+    const { addItem, applyPromoCode } = useCartStore.getState();
+    addItem(mockProduct2); // 400
+
+    const result = applyPromoCode('INVALID_CODE');
+    const state = useCartStore.getState();
+
+    expect(result.success).toBe(false);
+    expect(state.promoCode).toBeNull();
+    expect(state.discountAmount).toBe(0);
+    expect(state.totalPrice).toBe(400);
+  });
+
+  it('13. защищает от повторного применения того же промокода и не суммирует скидку', () => {
+    const { addItem, applyPromoCode } = useCartStore.getState();
+    addItem(mockProduct2); // 400
+
+    applyPromoCode('SALE10');
+    const secondAttempt = applyPromoCode('sale10');
+    const state = useCartStore.getState();
+
+    expect(secondAttempt.success).toBe(false);
+    expect(state.discountPercent).toBe(10); // Не 20%!
+    expect(state.totalPrice).toBe(360);
+  });
+
+  it('14. динамически пересчитывает скидку при изменении количества или удалении товара (DoD)', () => {
+    const { addItem, incrementQuantity, applyPromoCode } = useCartStore.getState();
+    addItem(mockProduct2); // 400
+    applyPromoCode('SALE10'); // скидка 40, итог 360
+
+    incrementQuantity(102); // теперь 2 шт = 800
+    const state = useCartStore.getState();
+
+    expect(state.discountAmount).toBe(80); // 10% от 800
+    expect(state.totalPrice).toBe(720); // 800 - 80
+  });
+
+  it('15. сбрасывает применённый промокод при очистке корзины (DoD)', () => {
+    const { addItem, applyPromoCode, clearCart } = useCartStore.getState();
+    addItem(mockProduct2);
+    applyPromoCode('SALE10');
+
+    clearCart();
+    const state = useCartStore.getState();
+
+    expect(state.promoCode).toBeNull();
+    expect(state.discountPercent).toBe(0);
+    expect(state.discountAmount).toBe(0);
   });
 });

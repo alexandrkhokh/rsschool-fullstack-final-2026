@@ -2,91 +2,134 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import type { CartState } from '../types/cart';
 import { mapProductToCartItem } from '../utils/mapProductToCartItem';
-import type { Product } from '../types/product';
-
-export const DEMO_PRODUCTS: Product[] = [
-  {
-    id: 101,
-    title: { rendered: 'Насос циркуляционный Grundfos UPS 25-60' },
-    link: '/catalog/101',
-    featured_media: 1,
-    price_html: '320.00 BYN',
-    acf: { pump_power: 60, pump_head: 6, pump_flow: 3.5 },
-    _embedded: { 'wp:featuredmedia': [] },
-    price_data: {
-      currency: 'BYN',
-      price: '320',
-      regular_price: '320',
-    },
-  },
-  {
-    id: 102,
-    title: { rendered: 'Насос скважинный Pedrollo 4SR 2/13' },
-    link: '/catalog/102',
-    featured_media: 2,
-    price_html: '650.00 BYN',
-    acf: { pump_power: 750, pump_head: 85, pump_flow: 3.6 },
-    _embedded: { 'wp:featuredmedia': [] },
-    price_data: {
-      currency: 'BYN',
-      price: '650',
-      regular_price: '700',
-      sale_price: '650',
-    },
-  },
-];
+import { INITIAL_TOTALS, PROMO_CODES } from './promoCodes';
+import { calculateTotals } from '../utils/calculateTotals';
 
 export const useCartStore = create<CartState>()(
   persist(
     (set, get) => ({
       items: [],
+      promoCode: null,
+      discountPercent: 0,
+      ...INITIAL_TOTALS,
 
       addItem: (product) =>
         set((state) => {
           const existingItem = state.items.find((item) => item.id === product.id);
-
-          if (existingItem) {
-            return {
-              items: state.items.map((item) =>
+          const updatedItems = existingItem
+            ? state.items.map((item) =>
                 item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
-              ),
-            };
-          }
+              )
+            : [...state.items, mapProductToCartItem(product, 1)];
 
           return {
-            items: [...state.items, mapProductToCartItem(product, 1)],
+            items: updatedItems,
+            ...calculateTotals(updatedItems, state.discountPercent),
           };
         }),
 
       incrementQuantity: (id) =>
-        set((state) => ({
-          items: state.items.map((item) =>
+        set((state) => {
+          const updatedItems = state.items.map((item) =>
             item.id === id ? { ...item, quantity: item.quantity + 1 } : item
-          ),
-        })),
+          );
+
+          return {
+            items: updatedItems,
+            ...calculateTotals(updatedItems, state.discountPercent),
+          };
+        }),
 
       decrementQuantity: (id) =>
-        set((state) => ({
-          items: state.items.map((item) =>
+        set((state) => {
+          const updatedItems = state.items.map((item) =>
             item.id === id && item.quantity > 1 ? { ...item, quantity: item.quantity - 1 } : item
-          ),
-        })),
+          );
+
+          return {
+            items: updatedItems,
+            ...calculateTotals(updatedItems, state.discountPercent),
+          };
+        }),
 
       removeItem: (id) =>
+        set((state) => {
+          const updatedItems = state.items.filter((item) => item.id !== id);
+          if (updatedItems.length === 0) {
+            return {
+              items: [],
+              promoCode: null,
+              discountPercent: 0,
+              ...INITIAL_TOTALS,
+            };
+          }
+
+          return {
+            items: updatedItems,
+            ...calculateTotals(updatedItems, state.discountPercent),
+          };
+        }),
+
+      clearCart: () =>
+        set({
+          items: [],
+          promoCode: null,
+          discountPercent: 0,
+          ...INITIAL_TOTALS,
+        }),
+
+      applyPromoCode: (rawCode) => {
+        const normalizedCode = rawCode.trim().toUpperCase();
+
+        if (!normalizedCode) {
+          return { success: false, message: 'Введите промокод' };
+        }
+
+        if (get().promoCode === normalizedCode) {
+          return {
+            success: false,
+            message: `Промокод ${normalizedCode} уже применён`,
+          };
+        }
+
+        const discount = PROMO_CODES[normalizedCode];
+
+        if (!discount) {
+          return { success: false, message: 'Неверный или недействительный промокод' };
+        }
+
         set((state) => ({
-          items: state.items.filter((item) => item.id !== id),
+          promoCode: normalizedCode,
+          discountPercent: discount,
+          ...calculateTotals(state.items, discount),
+        }));
+
+        return {
+          success: true,
+          message: `Промокод ${normalizedCode} применён (−${discount}%)`,
+        };
+      },
+
+      removePromoCode: () =>
+        set((state) => ({
+          promoCode: null,
+          discountPercent: 0,
+          ...calculateTotals(state.items, 0),
         })),
-
-      clearCart: () => set({ items: [] }),
-
-      getTotalItems: () => get().items.reduce((total, item) => total + item.quantity, 0),
-
-      getTotalPrice: () =>
-        get().items.reduce((total, item) => total + item.price * item.quantity, 0),
     }),
     {
       name: 'shopping-cart-storage',
-      partialize: (state) => ({ items: state.items }),
+      partialize: (state) => ({
+        items: state.items,
+        promoCode: state.promoCode,
+        discountPercent: state.discountPercent,
+      }),
+      // Пересчитываем totals при восстановлении данных из localStorage
+      onRehydrateStorage: () => (state) => {
+        if (state) {
+          Object.assign(state, calculateTotals(state.items, state.discountPercent));
+        }
+      },
     }
   )
 );
