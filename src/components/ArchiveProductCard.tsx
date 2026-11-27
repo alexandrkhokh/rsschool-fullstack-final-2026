@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { useCartStore } from '../store/useCartStore.ts';
 import type { Product } from '../types/product.ts';
 import { Button } from './ui/Button/Button.tsx';
+import { Link, useNavigate } from 'react-router-dom';
+import { getProductRoute } from '../router.tsx';
 
 type Props = {
   product: Product;
@@ -10,6 +12,9 @@ type Props = {
 const ArchiveProductCard = ({ product }: Props) => {
   const { addItem } = useCartStore((state) => state);
   const [isProduct, setProduct] = useState(false);
+  const navigate = useNavigate();
+
+  const productUrl = getProductRoute(product.id);
   const productTitle = product.title.rendered;
   const price = Number(product.price_data.regular_price).toLocaleString('ru-RU');
   const currency = product.price_data.currency;
@@ -22,9 +27,13 @@ const ArchiveProductCard = ({ product }: Props) => {
     setProduct(true);
   };
 
+  const handleProduct = () => {
+    navigate(productUrl);
+  };
+
   return (
     <div className="ep-product-card">
-      <a href={product.link} className="woocommerce-loop-product__link">
+      <Link to={productUrl} className="woocommerce-loop-product__link">
         <div className="product-card__img">
           <img width={300} height={300} src={src} alt={productTitle} />
         </div>
@@ -44,14 +53,23 @@ const ArchiveProductCard = ({ product }: Props) => {
           </div>
           <span className="price">{`${price} ${currency}`}</span>
         </div>
-      </a>
-      <div style={{ display: 'flex', justifyContent: 'center', padding: ' 0 20px 20px' }}>
+      </Link>
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center',
+          padding: ' 0 20px 20px',
+          gap: '10px',
+        }}
+      >
         <Button
           fullWidth
           variant={isProduct ? 'secondary' : 'primary'}
           text={isProduct ? 'В корзине' : 'Добавить в корзину'}
           onClick={handleAddProduct}
         />
+        <Button fullWidth variant="ghost" text="Подробнее" onClick={handleProduct} />
       </div>
     </div>
   );

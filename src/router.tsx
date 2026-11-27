@@ -34,3 +34,5 @@ export const router = createBrowserRouter([
     ],
   },
 ]);
+
+export const getProductRoute = (id: number | string): string => `/catalog/${id}`;
