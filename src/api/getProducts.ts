@@ -1,4 +1,4 @@
-import type {Product} from "../types/product.ts";
+import type { Product } from '../types/product.ts';
 
 const API = import.meta.env.VITE_API_URL ?? '/wp-json';
 
@@ -12,10 +12,10 @@ export async function getProducts(page = 1, perPage = 12): Promise<ProductsResul
   const query = new URLSearchParams({
     page: String(page),
     per_page: String(perPage),
-    _embed: "wp:featuredmedia",
-  })
+    _embed: 'wp:featuredmedia',
+  });
 
-  const res = await fetch( `${API}/wp/v2/product?${query}` );
+  const res = await fetch(`${API}/wp/v2/product?${query}`);
 
   if (!res.ok) {
     throw new Error(`Store API error ${res.status}`);
@@ -23,9 +23,29 @@ export async function getProducts(page = 1, perPage = 12): Promise<ProductsResul
 
   return {
     products: await res.json(),
-    total: Number(res.headers.get("X-WP-Total") ?? 0),
-    totalPages: Number(res.headers.get("X-WP-TotalPages") ?? 0),
+    total: Number(res.headers.get('X-WP-Total') ?? 0),
+    totalPages: Number(res.headers.get('X-WP-TotalPages') ?? 0),
   };
 }
 
+export async function getProduct(id: number, signal?: AbortSignal): Promise<Product> {
+  try {
+    const res = await fetch(`${API}/wp/v2/product/${id}?_embed=wp:featuredmedia`, {
+      signal,
+    });
 
+    if (!res.ok) {
+      throw new Error(`Store API error: ${res.status}`);
+    }
+
+    const data: Product = await res.json();
+    return data;
+  } catch (error) {
+    if (error instanceof Error && error.name === 'AbortError') {
+      throw error;
+    }
+
+    console.error(`Failed to fetch product with id ${id}:`, error);
+    throw error;
+  }
+}

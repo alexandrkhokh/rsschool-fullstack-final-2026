@@ -25,7 +25,7 @@ export interface CartState extends CartTotals {
   items: CartItem[];
   promoCode: string | null;
   discountPercent: number;
-  addItem: (product: Product) => void;
+  addItem: (product: Product, quantity?: number) => void;
   incrementQuantity: (id: CartItem['id']) => void;
   decrementQuantity: (id: CartItem['id']) => void;
   removeItem: (id: CartItem['id']) => void;
