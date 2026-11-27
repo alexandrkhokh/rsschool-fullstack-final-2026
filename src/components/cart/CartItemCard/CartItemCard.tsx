@@ -3,6 +3,8 @@ import type { CartItem } from '../../../types/cart';
 import styles from './CartItemCard.module.css';
 import { Button } from '../../ui/Button/Button';
 import defaultProductImg from '../../../assets/default-product.svg';
+import { Link } from 'react-router-dom';
+import { getProductRoute } from '../../../router';
 
 interface CartItemCardProps {
   item: CartItem;
@@ -19,6 +21,7 @@ export const CartItemCard = ({
 }: CartItemCardProps): JSX.Element => {
   const totalItemPrice = item.price * item.quantity;
   const currency = item.currency || 'BYN';
+  const productUrl = getProductRoute(item.id);
 
   const handleImageError = (event: SyntheticEvent<HTMLImageElement>): void => {
     event.currentTarget.onerror = null;
@@ -27,20 +30,21 @@ export const CartItemCard = ({
 
   return (
     <article className={styles.card}>
-      <img
-        src={item.image || defaultProductImg}
-        alt={item.title}
-        className={styles.image}
-        onError={handleImageError}
-      />
+      <Link to={productUrl} className={styles.productLink} aria-label={item.title}>
+        <img
+          src={item.image || defaultProductImg}
+          alt={item.title}
+          className={styles.image}
+          onError={handleImageError}
+        />
 
-      <div className={styles.info}>
-        <h3 className={styles.title}>{item.title}</h3>
-        <p className={styles.unitPrice}>
-          {item.price.toLocaleString()} {currency} / шт.
-        </p>
-      </div>
-
+        <div className={styles.info}>
+          <h3 className={styles.title}>{item.title}</h3>
+          <p className={styles.unitPrice}>
+            {item.price.toLocaleString()} {currency} / шт.
+          </p>
+        </div>
+      </Link>
       <div className={styles.controls}>
         <Button
           variant="secondary"
