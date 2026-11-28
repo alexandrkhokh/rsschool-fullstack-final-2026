@@ -3,8 +3,11 @@
 @use "../typography" as *;
 
 header{
+  display: flex;
+  gap: 16px;
+  padding: 16px;
+  border-bottom: 1px solid #ccc;
   margin-bottom: 25px;
-  padding: 0;
 }
 
 footer {
@@ -20,6 +23,8 @@ header, footer {
   z-index: 300;
 
   .menu-top_header-container {
+    display: flex;
+    gap: 12px;
     margin: 12px 0 10px;
     @media (min-width: $xl) {
       margin: 12px 0;

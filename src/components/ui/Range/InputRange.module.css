@@ -1,0 +1,97 @@
+.range {
+  margin: 0 0 20px;
+  padding: 0;
+  border: 0;
+}
+
+.title {
+  padding: 0;
+  font-weight: 600;
+}
+
+.value {
+  display: block;
+  margin: 4px 0 8px;
+}
+
+/* Линия шкалы: закрашен участок между --from и --to */
+.track {
+  --thumb-size: 18px;
+
+  position: relative;
+  height: var(--thumb-size);
+}
+
+.track::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: 0;
+  left: 0;
+  height: 4px;
+  border-radius: 2px;
+  background: linear-gradient(
+    to right,
+    #d1d5db var(--from),
+    #1e40af var(--from),
+    #1e40af var(--to),
+    #d1d5db var(--to)
+  );
+  transform: translateY(-50%);
+}
+
+/* Два input лежат друг на друге, мышь реагирует только на сами ползунки */
+.input {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  background: none;
+  appearance: none;
+  pointer-events: none;
+}
+
+.onTop {
+  z-index: 1;
+}
+
+/* Селекторы для webkit и Firefox нельзя объединять через запятую */
+.input::-webkit-slider-thumb {
+  width: var(--thumb-size);
+  height: var(--thumb-size);
+  border: 2px solid white;
+  border-radius: 50%;
+  background: #1e40af;
+  box-shadow: 0 0 0 1px #1e40af;
+  appearance: none;
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+.input::-moz-range-thumb {
+  box-sizing: border-box;
+  width: var(--thumb-size);
+  height: var(--thumb-size);
+  border: 2px solid white;
+  border-radius: 50%;
+  background: #1e40af;
+  box-shadow: 0 0 0 1px #1e40af;
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+.input:focus-visible {
+  outline: none;
+}
+
+.input:focus-visible::-webkit-slider-thumb {
+  outline: 2px solid #1e40af;
+  outline-offset: 2px;
+}
+
+.input:focus-visible::-moz-range-thumb {
+  outline: 2px solid #1e40af;
+  outline-offset: 2px;
+}

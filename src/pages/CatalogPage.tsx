@@ -5,7 +5,7 @@ import { type Product } from '../types/product';
 import ArchiveProductCard from "../components/ArchiveProductCard.tsx";
 import Pagination from "../components/Pagination.tsx";
 import {getRanges} from "../api/getRanges.ts";
-import InputRange from "../components/ui/Range/InputRange.tsx";
+import {InputRange} from "../components/ui/Range/InputRange.tsx";
 import type {Ranges, Range} from "../types/ranges.ts";
 
 const PER_PAGE = 12;
@@ -18,6 +18,9 @@ export const CatalogPage = (): JSX.Element => {
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [ranges, setRanges] = useState<Ranges | null>(null)
+  const [headFilter, setHeadFilter] = useState<Range>({min: null, max: null})
+  const [flowFilter, setFlowFilter] = useState<Range>({min: null, max: null})
+  const [powerFilter, setPowerFilter] = useState<Range>({min: null, max: null})
 
   useEffect(() => {
     getRanges().then((data) => setRanges(data));
@@ -38,10 +41,6 @@ export const CatalogPage = (): JSX.Element => {
       });
   }, [page]);
 
-  const handleHeadChange = (range: Range) => {
-    setRanges(prev => prev && { ...prev, pump_head: range });
-  };
-
   console.log(products)
 
   const handleSetPage = (newPage: number) => {
@@ -58,6 +57,10 @@ export const CatalogPage = (): JSX.Element => {
     return <p>Загрузка...</p>
   }
 
+  const head = ranges?.pump_head;
+  const flow = ranges?.pump_flow;
+  const power = ranges?.pump_power;
+
   return (
     <>
       <h1>Каталог товаров</h1>
@@ -65,13 +68,36 @@ export const CatalogPage = (): JSX.Element => {
         <div className="col-sm-12 col-md-4 col-lg-3 col-xl-2 mb-3">
           <aside id="sidebar">
             {products.length} продуктов на странице
-            <InputRange
-              name="Напор"
-              dimention="м"
-              onChange={handleHeadChange}
-              min={ranges?.pump_head.min ?? 0}
-              max={ranges?.pump_head.max ?? 0}
-            />
+            {power && power.min !== null && power.max !== null && (
+              <InputRange
+                name="Напор"
+                unit="м"
+                min={power.min}
+                max={power.max}
+                value={powerFilter}
+                onChange={setPowerFilter}
+              />
+            )}
+            {head && head.min !== null && head.max !== null && (
+              <InputRange
+                name="Напор"
+                unit="м"
+                min={head.min}
+                max={head.max}
+                value={headFilter}
+                onChange={setHeadFilter}
+              />
+            )}
+            {flow && flow.min !== null && flow.max !== null && (
+              <InputRange
+                name="Расход"
+                unit="м3/ч"
+                min={flow.min}
+                max={flow.max}
+                value={flowFilter}
+                onChange={setHeadFilter}
+              />
+            )}
           </aside>
         </div>
         <div className="col-sm-12 col-md-8 col-lg-9 col-xl-10">

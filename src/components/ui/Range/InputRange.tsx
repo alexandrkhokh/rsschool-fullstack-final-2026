@@ -1,53 +1,72 @@
-import {type Range} from "../../../types/ranges.ts";
+import type { CSSProperties, JSX } from 'react';
+import type { Range } from '../../../types/ranges.ts';
+import styles from './InputRange.module.css';
 
-interface RangeProps extends Range{
-  name: string
-  dimention: string
-  onChange: ({min, max}: Range) => void
+interface InputRangeProps {
+  name: string;
+  unit: string;
+  min: number;
+  max: number;
+  value: Range;
+  onChange: (value: Range) => void;
 }
 
-const InputRange = ({name, min, max, dimention, onChange}: RangeProps) => {
+export const InputRange = ({
+  name,
+  unit,
+  min,
+  max,
+  value,
+  onChange,
+}: InputRangeProps): JSX.Element => {
+  const from = value.min ?? min;
+  const to = value.max ?? max;
+
+  const toPercent = (point: number) => (max > min ? ((point - min) / (max - min)) * 100 : 0);
+
+  const handleFromChange = (newFrom: number) => {
+    onChange({ min: Math.min(newFrom, to), max: value.max });
+  };
+
+  const handleToChange = (newTo: number) => {
+    onChange({ min: value.min, max: Math.max(newTo, from) });
+  };
+
+  const trackStyle = {
+    '--from': `${toPercent(from)}%`,
+    '--to': `${toPercent(to)}%`,
+  } as CSSProperties;
+
+  const isFromOnTop = toPercent(from) > 50;
+
   return (
-    <>
-      <h4 className="wp-block-heading">{name}</h4>
-      <div className="facetwp-type-slider">
-        <div className="facetwp-slider-wrap">
-          <span className="facetwp-slider-label">`${min} ${dimention} — ${max} ${dimention}`</span>
-          <div className="facetwp-slider" data-has-moved="">
-            <div className="noUi-connects">
-              <div className="noUi-connect" style="transform: translate(0%, 0px) scale(1, 1);"></div>
-            </div>
-            <div className="noUi-origin" style="transform: translate(-100%, 0px); z-index: 5;">
-              <div className="noUi-handle noUi-handle-lower"
-                   data-handle="0"
-                   tabIndex={0}
-                   role="slider"
-                   aria-orientation="horizontal"
-                   aria-valuemin="8.0"
-                   aria-valuemax="263.0"
-                   aria-valuenow="8.0"
-                   aria-valuetext="8.00">
-                <div className="noUi-touch-area"></div>
-              </div>
-            </div>
-            <div className="noUi-origin" style="transform: translate(0%, 0px); z-index: 4;">
-              <div className="noUi-handle noUi-handle-upper"
-                   data-handle="1"
-                   tabIndex={0}
-                   role="slider"
-                   aria-orientation="horizontal"
-                   aria-valuemin="8.0"
-                   aria-valuemax="263.0"
-                   aria-valuenow="263.0"
-                   aria-valuetext="263.00">
-                <div className="noUi-touch-area"></div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </>
-  )
-}
+    <fieldset className={styles.range}>
+      <legend className={styles.title}>{name}</legend>
 
-export default InputRange;
+      <output className={styles.value}>
+        {from} {unit} — {to} {unit}
+      </output>
+
+      <div className={styles.track} style={trackStyle}>
+        <input
+          type="range"
+          className={isFromOnTop ? `${styles.input} ${styles.onTop}` : styles.input}
+          aria-label={`${name}: от`}
+          min={min}
+          max={max}
+          value={from}
+          onChange={(e) => handleFromChange(Number(e.target.value))}
+        />
+        <input
+          type="range"
+          className={styles.input}
+          aria-label={`${name}: до`}
+          min={min}
+          max={max}
+          value={to}
+          onChange={(e) => handleToChange(Number(e.target.value))}
+        />
+      </div>
+    </fieldset>
+  );
+};
