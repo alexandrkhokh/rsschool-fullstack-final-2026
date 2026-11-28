@@ -1,0 +1,35 @@
+.specsSection {
+  margin-top: 8px;
+}
+
+.sectionHeading {
+  margin: 0 0 12px;
+  font-size: 18px;
+  color: #0f172a;
+}
+
+.specsList {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.specRow {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 12px;
+  border-radius: 6px;
+  background-color: #f8fafc;
+  font-size: 14px;
+}
+
+.specRow dt {
+  color: #475569;
+}
+
+.specRow dd {
+  margin: 0;
+  font-weight: 600;
+  color: #0f172a;
+}

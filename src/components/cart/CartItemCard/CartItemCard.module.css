@@ -8,6 +8,21 @@
   background-color: #ffffff;
 }
 
+.productLink {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex: 1;
+  min-width: 0;
+  text-decoration: none;
+  color: inherit;
+}
+
+.productLink:hover .title {
+  color: #2563eb;
+  text-decoration: underline;
+}
+
 .container {
   display: flex;
   align-items: center;

@@ -13,14 +13,15 @@ export const useCartStore = create<CartState>()(
       discountPercent: 0,
       ...INITIAL_TOTALS,
 
-      addItem: (product) =>
+      addItem: (product, quantity = 1) =>
         set((state) => {
+          const safeQuantity = Math.max(1, quantity);
           const existingItem = state.items.find((item) => item.id === product.id);
           const updatedItems = existingItem
             ? state.items.map((item) =>
-                item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
+                item.id === product.id ? { ...item, quantity: item.quantity + safeQuantity } : item
               )
-            : [...state.items, mapProductToCartItem(product, 1)];
+            : [...state.items, mapProductToCartItem(product, safeQuantity)];
 
           return {
             items: updatedItems,
